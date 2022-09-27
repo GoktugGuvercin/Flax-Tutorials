@@ -7,7 +7,7 @@ module to reconstruct the input as autoencoder output. Decoders are expected to 
 reverse what encoders exactly do. Hence, decoder layers tend to extend and upsample compressed information in latent space into original input size.
 
 <p align="center">
-  <img src="https://github.com/GoktugGuvercin/Flax-Tutorials/blob/main/Image%20Denoising%20with%20Autoencoders/images/Autoencoder.png", width=200, height=400 />
+  <img src="https://github.com/GoktugGuvercin/Flax-Tutorials/blob/main/Image%20Denoising%20with%20Autoencoders/images/Autoencoder.png", width=400, height=250 />
 </p>
 
 Autoencoders go through information loss during the compression of input into latent space; hence, we cannot say that these architectures completely 
