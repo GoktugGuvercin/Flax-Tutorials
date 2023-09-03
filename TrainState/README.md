@@ -34,8 +34,16 @@ In general, a TrainState object is managed by *train_step(.)* function or a *Tra
 
 # TrainState Layout:
 
+<p align="center">
+  <img src="https://github.com/GoktugGuvercin/Flax-Tutorials/blob/main/TrainState/images/TrainState%20Layout.png" width="1000" height="440" />
+</p>
+
+
+
 # TrainState Functionalities:
  
-
+<p align="center">
+  <img src="https://github.com/GoktugGuvercin/Flax-Tutorials/blob/main/TrainState/images/TrainState%20Functionalities.png" width="1000" height="620" />
+</p>
 
 
