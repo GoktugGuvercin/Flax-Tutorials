@@ -55,7 +55,7 @@ import optax
 from flax.training.train_state import TrainState
 
 class TrainStep:
-    def __init__(self, state: train_state.TrainState):
+    def __init__(self, state: TrainState):
         self.state = state
         self.softmax_ce_fn = optax.softmax_cross_entropy
         self.grad_fn = jax.value_and_grad(self.loss_fn, argnums=0, has_aux=True)
