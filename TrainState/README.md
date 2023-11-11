@@ -1,13 +1,10 @@
 
+
 # TrainState:
 
-* TrainState is a dataclass used to represent the state of model training. In each iteration, the model parameters are optimized, the state of optimizer is updated, 
-and the number of training steps is counted. TrainState is responsible for all these as a representative of training process, but also it can be extended to enclose and manage 
-more data members for state expression of other sub operations in training stage such as calculation of performance metrics and maintenance of batch norm statistics. In that way, 
-it would provide a typical pattern to simplify and modularize the trainin process. 
+* TrainState is a dataclass used to represent the state of model training. In each iteration, the model parameters are optimized, the state of optimizer is updated, and the number of training steps is counted. TrainState is responsible for all these as a representative of training process, but also it can be extended to enclose and manage more data members for state expression of other sub operations in training stage such as calculation of performance metrics and maintenance of batch norm statistics. In that way, it would provide a typical pattern to simplify and modularize the trainin process. When you finish this, you can go to [next tutorial](https://github.com/GoktugGuvercin/Flax-Tutorials/blob/main/TrainStep/README.md)
 
-* Built-in data members to store state information in TrainState are *tx*, *params*, and *step*. They are automatically defined when a a train state object is instantiated. We
-  can subclass TrainState and add new data members like that. The most useful ones are *epoch*, *batch statistics*, and *metrics*:
+* Built-in data members to store state information in TrainState are *tx*, *params*, and *step*. They are automatically defined when a a train state object is instantiated. We can subclass TrainState and add new data members like that. The most useful ones are *epoch*, *batch statistics*, and *metrics*:
 
   |  Built-in | `Definition` |
   | ---       |     ---         |
@@ -45,5 +42,4 @@ In general, a TrainState object is managed by *train_step(.)* function or a *Tra
 <p align="center">
   <img src="https://github.com/GoktugGuvercin/Flax-Tutorials/blob/main/TrainState/images/TrainState%20Functionalities.png" width="1000" height="620" />
 </p>
-
 
