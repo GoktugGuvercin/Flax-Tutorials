@@ -1,9 +1,7 @@
 
 # TrainStep:
 
-TrainStep, with the simplest terms, is actually a function to manage one step of model training. First, it performs forward pass to compute logits and loss, and apply backpropagation for gradient calculation. Then, by using computed gradients, it updates model parameters. These three operations can be regarded as the primitive and obligatory part of one training step. At this point, we can extend the functionality of TrainStep by adding the computation of evaluation metrics and updating batch-norm statistics. You can find a simple code example below.
-
-[Previous Tutorial](https://github.com/GoktugGuvercin/Flax-Tutorials/tree/main/TrainState)
+TrainStep, with the simplest terms, is actually a function to manage one step of model training. First, it performs forward pass to compute logits and loss, and apply backpropagation for gradient calculation. Then, by using computed gradients, it updates model parameters. These three operations can be regarded as the primitive and obligatory part of one training step. At this point, we can extend the functionality of TrainStep by adding the computation of evaluation metrics and updating batch-norm statistics. You can find a simple code example below. For remainder, you can look at [previous tutorial](https://github.com/GoktugGuvercin/Flax-Tutorials/tree/main/TrainState)
 
 ```py
 softmax_ce = optax.softmax_cross_entropy
