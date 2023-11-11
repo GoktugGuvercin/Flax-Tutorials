@@ -4,6 +4,9 @@
 TrainStep, with the simplest terms, is actually a function to manage one step of model training. First, it performs forward pass to compute logits and loss, and apply backpropagation for gradient calculation. Then, by using computed gradients, it updates model parameters. These three operations can be regarded as the primitive and obligatory part of one training step. At this point, we can extend the functionality of TrainStep by adding the computation of evaluation metrics and updating batch-norm statistics. You can find a simple code example below. For remainder, you can look at [previous tutorial](https://github.com/GoktugGuvercin/Flax-Tutorials/tree/main/TrainState)
 
 ```py
+import jax
+import optax
+
 softmax_ce = optax.softmax_cross_entropy
 
 def train_step(state, batch):
@@ -46,6 +49,10 @@ $$\$$
 As specified above, TrainStep can be also implemented as an interface to control the training stage. In that way, it can be more useful and understandle, because even though its classical function implementation given above seems to be shorter, it is more complicated. This causes Flax-users to have so many different questions about the structure of code. That is why understanding and implementing TrainState in class-interface is more recommended, one of which is given below:
 
 ```py
+import jax
+import flax
+import optax
+from flax.training.train_state import TrainState
 
 class TrainStep:
     def __init__(self, state: train_state.TrainState):
