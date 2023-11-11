@@ -1,10 +1,7 @@
 
 # TrainStep:
 
-TrainStep, with the simplest terms, is actually a function to carry out one step of model training stage. In other words, it performs forward pass to compute logits and loss, and 
-then perform backpropagation for gradient calculation, and update all model parameters with those gradients. By doing that, it completes all necessary operations to train the 
-network one step. To be able to do these easily, it utilizes *grad()* or *value_and_grad()* JAX operator and *apply_gradients()* function inside TrainState object. You can find a 
-simple code example below.
+TrainStep, with the simplest terms, is actually a function to manage one step of model training. First, it performs forward pass to compute logits and loss, and apply backpropagation for gradient calculation. Then, by using computed gradients, it updates model parameters. These three operations can be regarded as the primitive and obligatory part of one training step. At this point, we can extend the functionality of TrainStep by adding the computation of evaluation metrics and updating batch-norm statistics. You can find a simple code example below.
 
 ```py
 softmax_ce = optax.softmax_cross_entropy
@@ -21,6 +18,7 @@ def train_step(state, batch):
   (loss, logits), grads = grad_fn(state.params) # backward pass
   state = state.apply_gradients(grads)
 ```
+
 
 ## Questions and Answers:
 
@@ -42,3 +40,48 @@ $$\$$
 $$\$$
 > *The object "state" contains the data member "params" and `loss_fn()` has direct access to "state" object. So, why are we passing params as input argument to loss function ?*
 * Yes, `loss_fn()` can reach *"params"* by means of *"state"* object directly.So, passing it as input argument seems to be redundant. However, if we do not pass it, we cannot differentiate the loss function. JAX takes the derivative of functions with respect to their input arguments. 
+
+## TrainStep Interface:
+
+As specified above, TrainStep can be also implemented as an interface to control the training stage. In that way, it can be more useful and understandle, because even though its classical function implementation given above seems to be shorter, it is more complicated. This causes Flax-users to have so many different questions about the structure of code. That is why understanding and implementing TrainState in class-interface is more recommended, one of which is given below:
+
+```py
+
+class TrainStep:
+    def __init__(self, state: train_state.TrainState):
+        self.state = state
+        self.softmax_ce_fn = optax.softmax_cross_entropy
+        self.grad_fn = jax.value_and_grad(self.loss_fn, argnums=0, has_aux=True)
+
+    # backward() in torch
+    def backward(self, batch):
+        return self.grad_fn(self.state.params, batch)
+
+    # optim.step() in torch
+    def train_step(self, batch):
+        (loss, (logits, updates)), grads = self.backward(batch)
+        self.state = self.state.apply_gradients(grads=grads)
+        self.state = self.state.replace(batch_stats=updates["batch_stats"])
+        # metric computation
+
+    # model() + loss_fn() in torch
+    def loss_fn(self, params, batch):
+        imgs, labels = batch["image"], batch["labels"]
+        variables = {'params': params, 'batch_stats': self.state.batch_stats}
+
+        logits, updates = self.state.apply_fn(variables, x=batch['image'],
+                                              train=True, mutable=['batch_stats'])
+        loss = self.softmax_ce_fn(logits, labels)
+        return loss, (logits, updates)
+
+```
+
+#### Class Initializer:
+As you know, all necessary data members and the function to apply forward pass are collected in TrainState object, so managing train steps by using it is inevitable. In addition, for the computation of final loss and network gradients, we need 2 respective functions. So, these are defined and stored in class initializer as primitive components of TrainStep.
+
+#### Backward:
+The function `backward()` in PyTorch computes the gradients by backpropagating over computation graph. Here, `backward()` in TrainStep performs forward and backward passes at the same time, also returns the output of both operations. At this point, as you noticed, computing the gradients and using them to update model parameters are separate steps, because python-objects created for neural networks never enclose layer weights unlike PyTorch.
+
+#### Loss Function:
+
+#### Train Step:
